@@ -7,6 +7,9 @@ class User:
         self.lastName = lastName
         self.phoneNumber = phoneNumber
         #super().__init__()
+    
+    def FirstName(self):
+        return self.firstName
 
 
 class USUser(User):
@@ -25,6 +28,8 @@ user = User("Chris", "Chau", 123456789)
 print(user.firstName)
 print(user.lastName)
 print(user.phoneNumber)
+
+print(user.FirstName)
 
 usUser = USUser(user, 987654321)
 
