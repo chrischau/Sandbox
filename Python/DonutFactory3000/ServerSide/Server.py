@@ -29,7 +29,7 @@ class Employees_Name(Resource):
         #conn = db_connect.connect()
         #query = conn.execute("select * from employees where EmployeeId =%d "  %int(employee_id))
         #result = {'data': [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]}
-        result = {'data' : 'a, b, c, d', 'names' : 'john, mary, simone'}
+        result = {'data' : [ {'address' : 'abc', 'name' : 'john', 'city' : 'junkjunk'}]}
         return jsonify(result)
         
 
