@@ -11,8 +11,8 @@ func main() {
 	// fmt.Println(def)
 
 	f := fibonacci()
-	for i := 0; i < 15; i++ {
-		fmt.Println(f())
+	for i := 0; i <= 15; i++ {
+		fmt.Printf("%d : %d \n", i, f())
 	}
 }
 
