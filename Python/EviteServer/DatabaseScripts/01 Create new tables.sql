@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS EventsXAttendees;
 
 CREATE TABLE Events (
 	EventId INTEGER NOT NULL,
-	EventName TEXT NOT NULL,
+	EventName TEXT NOT NULL UNIQUE,
 	StartTime TEXT NOT NULL,
 	EndTime TEXT NOT NULL,
 	Location TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE Events (
 
 CREATE TABLE Attendees (
 	AttendeeId INTEGER NOT NULL,
-	AttendeeEmail TEXT NOT NULL,
+	AttendeeEmail TEXT NOT NULL UNIQUE,
 	CONSTRAINT Attendees_PK PRIMARY KEY (AttendeeId)
 );
 
