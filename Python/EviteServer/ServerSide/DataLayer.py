@@ -4,11 +4,10 @@ from flask import Flask, json
 import datetime
 import sqlite3
 import re
+import json
 
 
-class DataLayer:  
-  databaseName = "Database\EventServer.db"
-
+class DataLayer:
   # Event related SQLs
   selectAllEventsSQL = "SELECT EventId, EventName, Location, StartTime, EndTime FROM Events"
   insertEventSQL = "INSERT INTO Events(EventName, Location, StartTime, EndTime) VALUES ('{}', '{}', '{}', '{}')"
@@ -26,17 +25,24 @@ class DataLayer:
   selectEXASQL = "SELECT EventId, AttendeeId FROM EventsXAttendees"
   deleteEXASQL = "DELETE FROM EventsXAttendees WHERE EventId = {} AND AttendeeId = {}"
 
+  def __LoadConfigFile(self):
+    with open("ServerSide\\config.json") as json_data_file:
+      configFile = json.load(json_data_file)
+    
+    return configFile
+
   
   def __init__(self):
     ## TODO add logging
-    self.sqliteConnection = sqlite3.connect(self.databaseName)
+    configFile = self.__LoadConfigFile();
+    databaseName = configFile['DatabasePath']
+
+    self.sqliteConnection = sqlite3.connect(databaseName)
     self.cursor = self.sqliteConnection.cursor()
     #print("Database created and Successfully Connected to SQLite") #TODO logging
 
 
   def FindAllEvents(self):
-    #self.logger.info("Inside Users get function")
-
     self.cursor.execute(self.selectAllEventsSQL)
     results = self.cursor.fetchall()        
 
@@ -44,8 +50,6 @@ class DataLayer:
 
   
   def FindEvent(self, eventId, eventName):
-    #self.logger.info("Inside Users get function")
-
     #TODO paging data if too many data at once
     if (eventId != None):
       whereClause = " WHERE EventId = {}".format(eventId)
@@ -147,8 +151,9 @@ class DataLayer:
     
     return results
 
+
   def FindConfirmedInvitations(self, email, location, eventName, startTime, endTime):
-    whereClause = " WHERE 1=1"
+    whereClause = " WHERE 1 = 1"  #this is created to allow additional where clause to be added below
 
     if (startTime is not None and startTime != '') and (endTime is not None and endTime != ''):
       if (startTime > endTime):
@@ -240,7 +245,9 @@ class DataLayer:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
 
+ 
 
-# data = DataLayer()
+data = DataLayer()
+print(data.FindAllAttendees())
 # data.RemoveAttendanceInvitation("Test Event 1", "adam@abc.com")
 

@@ -9,4 +9,4 @@
 
 @echo on
 
-python Server.py
+python "ServerSide\Server.py"
