@@ -14,11 +14,14 @@ class DataLayer:
   createEventSQL = "INSERT INTO Events(EventName, Location, StartTime, EndTime) VALUES ('{}', '{}', '{}', '{}')"
     
   # Attendee related SQLs
-  findAllAttendeeSQL = "SELECT AttendeeEmail FROM Attendees"
+  findAllAttendeeSQL = "SELECT AttendeeId, AttendeeEmail FROM Attendees"
   createAttendeeSQL = "INSERT INTO Attendees(AttendeeEmail) VALUES ('{}')"
 
   # EventsXAttendees related SQLs
-  findAllEXASQL = "SELECT EventId, AttendeeId FROM EventsXAttendees"
+  findAllEXASQL = "SELECT E.EventId, E.EventName, E.Location, E.StartTime, E.EndTime, A.AttendeeId, A.AttendeeEmail FROM Events AS E \
+  JOIN EventsXAttendees AS EXA ON EXA.EventId = E.EventId \
+  JOIN Attendees AS A ON EXA.AttendeeId = A.AttendeeId"
+
   createEXASQL = "INSERT INTO EventsXAttendee(EventId, AttendeeId) VALUES ('{}', '{}')"
 
   
@@ -26,10 +29,7 @@ class DataLayer:
     ## TODO add logging
     self.sqliteConnection = sqlite3.connect(self.databaseName)
     self.cursor = self.sqliteConnection.cursor()
-    print("Database created and Successfully Connected to SQLite")
-
-    # self.cursor.execute("select sqlite_version();")
-    # print("SQLite Database Version is: ", self.cursor.fetchall())
+    #print("Database created and Successfully Connected to SQLite") #TODO logging
 
 
   def FindAllEvents(self):
@@ -105,6 +105,25 @@ class DataLayer:
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
 
 
+  def FindAllAttendees(self):
+    self.cursor.execute(self.findAllAttendeeSQL)
+    results = self.cursor.fetchall()        
+    
+    return results
+
+  
+  def FindAttendee(self, email):
+    #TODO paging data if too many data at once
+    if (email != None):
+      whereClause = " WHERE AttendeeEmail = '{}'".format(email)
+      self.cursor.execute(self.findAllAttendeeSQL + whereClause)
+      results = self.cursor.fetchall()        
+
+      return results
+
+    else:
+      return None
+
 
   def __ValidateEmailStructure(self, email):
     emailRegex = "[^@]+@[^@]+\.[^@]+"
@@ -118,15 +137,40 @@ class DataLayer:
     row = self.cursor.fetchone()
     if (row is not None):
       raise ValueError(errorMessage)
+
+  
+  def FindAllConfirmedInvitations(self):
+    self.cursor.execute(self.findAllEXASQL)
+    results = self.cursor.fetchall()        
     
+    return results
+
+  def FindConfirmedInvitations(self, email, location, eventName, startTime, endTime):
+    whereClause = " WHERE 1=1"
+
+    if (email is not None):
+      whereClause += " AND A.AttendeeEmail = '{}'".format(email)
+    if (location is not None):
+      whereClause += " AND E.Location = '{}'".format(location)
+    if (eventName is not None):
+      whereClause += " AND E.EventName = '{}'".format(evenName)
+    if (startTime is not None):
+      whereClause += " AND E.StartTime >= '{}'".format(startTime)
+    if (endTime is not None):
+      whereClause += " AND E.EndTime <= '{}'".format(endTime)
+    
+    self.cursor.execute(self.findAllEXASQL + whereClause + " ORDER BY StartTime ASC")
+    results = self.cursor.fetchall()        
+    
+    return results
 
 
 
+# # print(data.FindEvent(1, None))
 
-# print(data.FindEvent(1, None))
+# # print(data.FindAllEvents())
+# data = DataLayer()
+# # #print(data.CreateEvent("American Social Meeting 2", "Tokyo", "2020-10-02 20:00:00", "2020-10-03 02:00:00"))
+# # data.CreateAttendee("joseph@abc.com")
 
-# print(data.FindAllEvents())
-data = DataLayer()
-#print(data.CreateEvent("American Social Meeting 2", "Tokyo", "2020-10-02 20:00:00", "2020-10-03 02:00:00"))
-
-data.CreateAttendee("joseph@abc.com")
+# print(data.FindConfirmedInvitations(None, None, None, None, "2020-11-20 00:00:00"))
