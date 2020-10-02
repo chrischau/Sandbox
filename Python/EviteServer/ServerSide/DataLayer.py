@@ -25,6 +25,7 @@ class DataLayer:
   selectEXASQL = "SELECT EventId, AttendeeId FROM EventsXAttendees"
   deleteEXASQL = "DELETE FROM EventsXAttendees WHERE EventId = {} AND AttendeeId = {}"
 
+
   def __LoadConfigFile(self):
     with open("ServerSide\\config.json") as json_data_file:
       configFile = json.load(json_data_file)
