@@ -1,0 +1,13 @@
+
+
+1.  Unit Test
+2.  Logging
+3.  Documentation on the API, HTML page
+4.  Documentation on the code
+5.  Deployment procedure, Read Me file, pre requisits
+6.  Batch file to kick off python server
+7.  Signing up for events
+8.  Send email notification for events or attendee update ??? business requirement is not clear
+9.  Config files to change values
+10. Distinguish Update vs Insert of attendance, and removal
+11. 

@@ -125,21 +125,18 @@ def FindConfirmedInvitations():
 def UpdateInvitationAttendance():
   try:
     dataLayer = DataLayer()
-
     eventName, attendeeName = None, None
 
     if eventNameKeyWord in request.args:
-      eventName = int(request.args[eventNameKeyWord])
+      eventName = request.args[eventNameKeyWord]
     if emailKeyWord in request.args:
       email = request.args[emailKeyWord]
-    
-    
-    #results = dataLayer.FindAllEvents()
-    return jsonify(results), 200
+        
+    results = dataLayer.UpdateInvitationAttendance(eventName, email)
+    return "Attendee '{}' has been added to event '{}'.".format(email, eventName), 200
 
   except Exception as ex:
     return str(ex), 404
 
 if __name__ == '__main__':
      app.run(port='5002')
-     

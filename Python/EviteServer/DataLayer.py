@@ -10,19 +10,20 @@ class DataLayer:
   databaseName = "Database\EventServer.db"
 
   # Event related SQLs
-  findAllEventsSQL = "SELECT EventId, EventName, Location, StartTime, EndTime FROM Events"
-  createEventSQL = "INSERT INTO Events(EventName, Location, StartTime, EndTime) VALUES ('{}', '{}', '{}', '{}')"
+  selectAllEventsSQL = "SELECT EventId, EventName, Location, StartTime, EndTime FROM Events"
+  insertEventSQL = "INSERT INTO Events(EventName, Location, StartTime, EndTime) VALUES ('{}', '{}', '{}', '{}')"
     
   # Attendee related SQLs
-  findAllAttendeeSQL = "SELECT AttendeeId, AttendeeEmail FROM Attendees"
-  createAttendeeSQL = "INSERT INTO Attendees(AttendeeEmail) VALUES ('{}')"
+  selectAllAttendeeSQL = "SELECT AttendeeId, AttendeeEmail FROM Attendees"
+  insertAttendeeSQL = "INSERT INTO Attendees(AttendeeEmail) VALUES ('{}')"
 
   # EventsXAttendees related SQLs
   findAllEXASQL = "SELECT E.EventId, E.EventName, E.Location, E.StartTime, E.EndTime, A.AttendeeId, A.AttendeeEmail FROM Events AS E \
   JOIN EventsXAttendees AS EXA ON EXA.EventId = E.EventId \
   JOIN Attendees AS A ON EXA.AttendeeId = A.AttendeeId"
 
-  createEXASQL = "INSERT INTO EventsXAttendee(EventId, AttendeeId) VALUES ('{}', '{}')"
+  insertEXASQL = "INSERT INTO EventsXAttendees(EventId, AttendeeId) VALUES ('{}', '{}')"
+  selectEXASQL = "SELECT EventId, AttendeeId FROM EventsXAttendees"
 
   
   def __init__(self):
@@ -35,7 +36,7 @@ class DataLayer:
   def FindAllEvents(self):
     #self.logger.info("Inside Users get function")
 
-    self.cursor.execute(self.findAllEventsSQL)
+    self.cursor.execute(self.selectAllEventsSQL)
     results = self.cursor.fetchall()        
 
     return results
@@ -47,14 +48,14 @@ class DataLayer:
     #TODO paging data if too many data at once
     if (eventId != None):
       whereClause = " WHERE EventId = {}".format(eventId)
-      self.cursor.execute(self.findAllEventsSQL + whereClause)
+      self.cursor.execute(self.selectAllEventsSQL + whereClause)
       results = self.cursor.fetchall()        
 
       return results
     
     if (eventName != None and eventName != ''):
       whereClause = " WHERE EventName = '{}'".format(eventName)
-      self.cursor.execute(self.findAllEventsSQL + whereClause)
+      self.cursor.execute(self.selectAllEventsSQL + whereClause)
       results = self.cursor.fetchall()        
       
       return results
@@ -71,13 +72,13 @@ class DataLayer:
     
 
   def CreateEvent(self, eventName, location, startTime, endTime):
-    sqlStatement = self.findAllEventsSQL + " WHERE EventName = '{}'".format(eventName)
+    sqlStatement = self.selectAllEventsSQL + " WHERE EventName = '{}'".format(eventName)
     
     self.__ValidateRecordDoesNotExist(sqlStatement, "Event with the same name '{}' already exist.  Please choose another name.".format(eventName))
     self.__ValidateTimeFormat(startTime, "Incorrect Start Time datetime format.  It should be YYYY-MM-DD HH:MM:SS")
     self.__ValidateTimeFormat(endTime, "Incorrect End Time datetime format.  It should be YYYY-MM-DD HH:MM:SS")
 
-    insertStatement = self.createEventSQL.format(eventName, location, startTime, endTime)
+    insertStatement = self.insertEventSQL.format(eventName, location, startTime, endTime)
 
     try:
       self.cursor.execute(insertStatement)
@@ -89,12 +90,12 @@ class DataLayer:
 
 
   def CreateAttendee(self, email):
-    sqlStatement = self.findAllAttendeeSQL + " WHERE AttendeeEmail = '{}'".format(email)
+    sqlStatement = self.selectAllAttendeeSQL + " WHERE AttendeeEmail = '{}'".format(email)
     
     self.__ValidateRecordDoesNotExist(sqlStatement, "Attendee with the same email '{}' already exist.  Please verify and adjust accordingly.".format(email))
     self.__ValidateEmailStructure(email)    
 
-    insertStatement = self.createAttendeeSQL.format(email)
+    insertStatement = self.insertAttendeeSQL.format(email)
 
     try:
       self.cursor.execute(insertStatement)
@@ -106,7 +107,7 @@ class DataLayer:
 
 
   def FindAllAttendees(self):
-    self.cursor.execute(self.findAllAttendeeSQL)
+    self.cursor.execute(self.selectAllAttendeeSQL)
     results = self.cursor.fetchall()        
     
     return results
@@ -116,7 +117,7 @@ class DataLayer:
     #TODO paging data if too many data at once
     if (email != None and email != ''):
       whereClause = " WHERE AttendeeEmail = '{}'".format(email)
-      self.cursor.execute(self.findAllAttendeeSQL + whereClause)
+      self.cursor.execute(self.selectAllAttendeeSQL + whereClause)
       results = self.cursor.fetchall()        
 
       return results
@@ -148,12 +149,16 @@ class DataLayer:
   def FindConfirmedInvitations(self, email, location, eventName, startTime, endTime):
     whereClause = " WHERE 1=1"
 
+    if (startTime is not None and startTime != '') and (endTime is not None and endTime != ''):
+      if (startTime > endTime):
+        raise ValueError("Start Time cannot be later than End Time")
+    
     if (email is not None and email != ''):
       whereClause += " AND A.AttendeeEmail = '{}'".format(email)
     if (location is not None and location != ''):
       whereClause += " AND E.Location = '{}'".format(location)
     if (eventName is not None and eventName != ''):
-      whereClause += " AND E.EventName = '{}'".format(evenName)
+      whereClause += " AND E.EventName = '{}'".format(eventName)
     if (startTime is not None and startTime != ''):
       whereClause += " AND E.StartTime >= '{}'".format(startTime)
     if (endTime is not None and endTime != ''):
@@ -164,14 +169,51 @@ class DataLayer:
     
     return results
 
+  def __ValidateIfNullOrEmpty(self, element, errorObject):
+    if (element is None or str(element) == ''):
+      raise ValueError("'{}' is not provided.".format(errorObject))
 
-  # def UpdateInvitationAttendance(self, eventName, email):
-  #   if (eventName is None):
 
-# # print(data.FindEvent(1, None))
+  def __FindFirstElement(self, sqlStatement, whereClause, errorObject, element):
+    self.cursor.execute(sqlStatement + whereClause.format(element))
+    result = self.cursor.fetchone()
 
-# # print(data.FindAllEvents())
-#data = DataLayer()
-# # #print(data.CreateEvent("American Social Meeting 2", "Tokyo", "2020-10-02 20:00:00", "2020-10-03 02:00:00"))
+    if (result is None):
+      raise ValueError("{} '{}' does not exist".format(errorObject, element))
 
-#data.FindAttendee("")
+    return result
+
+  def __ValidateIfDoesntExist(self, sqlStatement, whereClause, eventId, eventName, attendeeId, email):
+    self.cursor.execute(sqlStatement + whereClause.format(eventId, attendeeId))
+    result = self.cursor.fetchone()
+
+    if (result is not None):
+      raise ValueError("Email '{}' has been added to event '{}'.".format(email, eventName))
+
+
+  def UpdateInvitationAttendance(self, eventName, email):
+    self.__ValidateIfNullOrEmpty(eventName, "Event name")
+    self.__ValidateIfNullOrEmpty(email, "Attendee email")
+    
+    result = self.__FindFirstElement(self.selectAllEventsSQL, " WHERE EventName = '{}'", "Event name", eventName)
+    eventId = result[0]
+
+    result = self.__FindFirstElement(self.selectAllAttendeeSQL, " WHERE AttendeeEmail = '{}'", "Attendee email", email)
+    attendeeId = result[0]
+
+    self.__ValidateIfDoesntExist(self.selectEXASQL, " WHERE EventId = {} AND AttendeeId = {}", eventId, eventName, attendeeId, email)
+
+    try:
+      self.cursor.execute(self.insertEXASQL.format(eventId, attendeeId))
+      self.sqliteConnection.commit()
+
+    except Exception as ex:
+      self.sqliteConnection.rollback()
+      raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
+
+
+# data = DataLayer()
+# # # #print(data.CreateEvent("American Social Meeting 2", "Tokyo", "2020-10-02 20:00:00", "2020-10-03 02:00:00"))
+
+# data.UpdateInvitationAttendance("Test Event 2", "jeff@abc.com")
+
