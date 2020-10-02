@@ -190,6 +190,7 @@ class DataLayer:
 
     return result
 
+
   def __ValidateIfDoesntExist(self, sqlStatement, whereClause, eventId, eventName, attendeeId, email):
     self.cursor.execute(sqlStatement + whereClause.format(eventId, attendeeId))
     result = self.cursor.fetchone()
@@ -248,7 +249,7 @@ class DataLayer:
 
  
 
-data = DataLayer()
-print(data.FindAllAttendees())
+#data = DataLayer()
+#print(data.FindAllAttendees())
 # data.RemoveAttendanceInvitation("Test Event 1", "adam@abc.com")
 
