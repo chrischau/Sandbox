@@ -13,7 +13,9 @@ endTimeKeyWord, eventIdKeyWord, attendeeIdKeyWord = "endtime", "eventid", "atten
 
 @app.route('/', methods=['GET'])
 def HomePageInstruction():
-  return "<h1>Insert documentation later.</h1>"
+  webpageHelpDoc = "<h1>Evite Server API</h1>"
+
+  return webpageHelpDoc
 
 
 @app.route('/events', methods=['GET'])
