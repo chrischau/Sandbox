@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify
 import sys
 import traceback
 import logging
-from DataLayer import DataLayer
+import DataLayer
+
 
 app = Flask(__name__)
 
