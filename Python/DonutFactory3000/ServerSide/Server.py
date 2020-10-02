@@ -13,7 +13,7 @@ app = Flask(__name__)
 api = Api(app)
 connectionString = "Driver={SQL Server};Server=SINWS0127;Database=EscrowService;UID=sa;PWD=changeme;"
 
-         
+
 class Users(Resource):
     def __init__(self):
         logging.basicConfig(filename="C:\Development\GitHub\Sandbox\Python\DonutFactory3000\ServerSide\server_trace.log",
