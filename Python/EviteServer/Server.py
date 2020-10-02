@@ -126,15 +126,15 @@ def UpdateInvitationAttendance():
   try:
     dataLayer = DataLayer()
 
-    eventId, attendeeId = None, None
+    eventName, attendeeName = None, None
 
-    if eventIdKeyWord in request.args:
-      eventId = int(request.args[eventIdKeyWord])
-    if attendeeIdKeyWord in request.args:
-      attendeeId = request.args[attendeeIdKeyWord]
+    if eventNameKeyWord in request.args:
+      eventName = int(request.args[eventNameKeyWord])
+    if emailKeyWord in request.args:
+      email = request.args[emailKeyWord]
     
     
-    results = dataLayer.FindAllEvents()
+    #results = dataLayer.FindAllEvents()
     return jsonify(results), 200
 
   except Exception as ex:

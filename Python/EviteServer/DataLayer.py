@@ -52,7 +52,7 @@ class DataLayer:
 
       return results
     
-    if (eventName != None):
+    if (eventName != None and eventName != ''):
       whereClause = " WHERE EventName = '{}'".format(eventName)
       self.cursor.execute(self.findAllEventsSQL + whereClause)
       results = self.cursor.fetchall()        
@@ -114,7 +114,7 @@ class DataLayer:
   
   def FindAttendee(self, email):
     #TODO paging data if too many data at once
-    if (email != None):
+    if (email != None and email != ''):
       whereClause = " WHERE AttendeeEmail = '{}'".format(email)
       self.cursor.execute(self.findAllAttendeeSQL + whereClause)
       results = self.cursor.fetchall()        
@@ -148,15 +148,15 @@ class DataLayer:
   def FindConfirmedInvitations(self, email, location, eventName, startTime, endTime):
     whereClause = " WHERE 1=1"
 
-    if (email is not None):
+    if (email is not None and email != ''):
       whereClause += " AND A.AttendeeEmail = '{}'".format(email)
-    if (location is not None):
+    if (location is not None and location != ''):
       whereClause += " AND E.Location = '{}'".format(location)
-    if (eventName is not None):
+    if (eventName is not None and eventName != ''):
       whereClause += " AND E.EventName = '{}'".format(evenName)
-    if (startTime is not None):
+    if (startTime is not None and startTime != ''):
       whereClause += " AND E.StartTime >= '{}'".format(startTime)
-    if (endTime is not None):
+    if (endTime is not None and endTime != ''):
       whereClause += " AND E.EndTime <= '{}'".format(endTime)
     
     self.cursor.execute(self.findAllEXASQL + whereClause + " ORDER BY StartTime ASC")
@@ -165,12 +165,13 @@ class DataLayer:
     return results
 
 
+  # def UpdateInvitationAttendance(self, eventName, email):
+  #   if (eventName is None):
 
 # # print(data.FindEvent(1, None))
 
 # # print(data.FindAllEvents())
-# data = DataLayer()
+#data = DataLayer()
 # # #print(data.CreateEvent("American Social Meeting 2", "Tokyo", "2020-10-02 20:00:00", "2020-10-03 02:00:00"))
-# # data.CreateAttendee("joseph@abc.com")
 
-# print(data.FindConfirmedInvitations(None, None, None, None, "2020-11-20 00:00:00"))
+#data.FindAttendee("")

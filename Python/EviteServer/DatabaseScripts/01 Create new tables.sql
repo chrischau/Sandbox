@@ -27,6 +27,37 @@ CREATE TABLE EventsXAttendees (
 
 
 
-INSERT INTO Events (EventName, StartTime, EndTime, Location)
-VALUES ("Test Event 3", datetime('now'), datetime('now', 'start of month', '+5 day'), "Hong Kong")
+-- Insert into Attendees(AttendeeEmail)
+-- Values("kelly@abc.com")
+
+-- Insert into Attendees(AttendeeEmail)
+-- Values("adam@abc.com")
+
+-- Insert into Attendees(AttendeeEmail)
+-- Values("john@abc.com")
+
+-- Insert into Attendees(AttendeeEmail)
+-- Values("jeff@abc.com")
+
+-- INSERT INTO Events (EventName, StartTime, EndTime, Location)
+-- VALUES ("Test Event 1", datetime('now'), datetime('now', 'start of day', '+1 day'), "Hong Kong")
+
+-- INSERT INTO Events (EventName, StartTime, EndTime, Location)
+-- VALUES ("Test Event 2", datetime('now'), datetime('now', 'start of day', '+5 day'), "Hong Kong")
+
+-- INSERT INTO Events (EventName, StartTime, EndTime, Location)
+-- VALUES ("Test Event 3", datetime('now'), datetime('now', 'start of month', '+5 day'), "Hong Kong")
+
+-- INSERT INTO EventsXAttendees (EventId, AttendeeId)
+-- VALUES (1, 1)
+
+-- INSERT INTO EventsXAttendees (EventId, AttendeeId)
+-- VALUES (1, 2)
+
+-- INSERT INTO EventsXAttendees (EventId, AttendeeId)
+-- VALUES (2, 3)
+
+-- INSERT INTO EventsXAttendees (EventId, AttendeeId)
+-- VALUES (3, 4)
+
 
