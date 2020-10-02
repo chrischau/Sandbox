@@ -24,6 +24,7 @@ class DataLayer:
 
   insertEXASQL = "INSERT INTO EventsXAttendees(EventId, AttendeeId) VALUES ('{}', '{}')"
   selectEXASQL = "SELECT EventId, AttendeeId FROM EventsXAttendees"
+  deleteEXASQL = "DELETE FROM EventsXAttendees WHERE EventId = {} AND AttendeeId = {}"
 
   
   def __init__(self):
@@ -188,10 +189,18 @@ class DataLayer:
     result = self.cursor.fetchone()
 
     if (result is not None):
-      raise ValueError("Email '{}' has been added to event '{}'.".format(email, eventName))
+      raise ValueError("Email '{}' has already been added to event '{}'.".format(email, eventName))
+
+  
+  def __ValidateIfExist(self, sqlStatement, whereClause, eventId, eventName, attendeeId, email):
+    self.cursor.execute(sqlStatement + whereClause.format(eventId, attendeeId))
+    result = self.cursor.fetchone()
+
+    if (result is None):
+      raise ValueError("Email '{}' has not been added to event '{}'.".format(email, eventName))
 
 
-  def UpdateInvitationAttendance(self, eventName, email):
+  def __FindEventIdAttendeeId(self, eventName, email):
     self.__ValidateIfNullOrEmpty(eventName, "Event name")
     self.__ValidateIfNullOrEmpty(email, "Attendee email")
     
@@ -200,6 +209,12 @@ class DataLayer:
 
     result = self.__FindFirstElement(self.selectAllAttendeeSQL, " WHERE AttendeeEmail = '{}'", "Attendee email", email)
     attendeeId = result[0]
+
+    return eventId, attendeeId
+
+
+  def UpdateAttendanceInvitation(self, eventName, email):
+    eventId, attendeeId = self.__FindEventIdAttendeeId(eventName, email)
 
     self.__ValidateIfDoesntExist(self.selectEXASQL, " WHERE EventId = {} AND AttendeeId = {}", eventId, eventName, attendeeId, email)
 
@@ -212,8 +227,20 @@ class DataLayer:
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
 
 
-# data = DataLayer()
-# # # #print(data.CreateEvent("American Social Meeting 2", "Tokyo", "2020-10-02 20:00:00", "2020-10-03 02:00:00"))
+  def RemoveAttendanceInvitation(self, eventName, email):
+    eventId, attendeeId = self.__FindEventIdAttendeeId(eventName, email)
 
-# data.UpdateInvitationAttendance("Test Event 2", "jeff@abc.com")
+    self.__ValidateIfExist(self.selectEXASQL, " WHERE EventId = {} AND AttendeeId = {}", eventId, eventName, attendeeId, email)
+
+    try:
+      self.cursor.execute(self.deleteEXASQL.format(eventId, attendeeId))
+      self.sqliteConnection.commit()
+
+    except Exception as ex:
+      self.sqliteConnection.rollback()
+      raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
+
+
+# data = DataLayer()
+# data.RemoveAttendanceInvitation("Test Event 1", "adam@abc.com")
 
