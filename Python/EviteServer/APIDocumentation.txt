@@ -1,0 +1,223 @@
+EviteServer API Documentation
+
+Operation: GET /events
+Parameters: EventId as an integer, optional
+		      	EventName as string, optional
+
+If EventId is provided, the system will retrieve data based on Event Id.
+If EventId is not provide, the system will use eventname to retrieve data based on Event Name.
+If no parameter is provided, the system will return all the events.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would return HTTP code 404 and the error message.
+
+Result Result Format: JSON
+Return HTTP Code: 200 or 404
+Return JSON Data: EventId
+				          EventName
+				          Location
+				          StartTime
+				          EndTime
+
+
+------------------------------------------
+
+Operation: POST /events
+Parameters: EventName as string, mandatory
+			      StartTime as string, mandatory
+			      EndTime as string, mandatory
+			      Location as string, mandatory
+
+All fields are required.  Any fields not provide would return an error message and HTTP code 404.
+
+The system checks if the StartTime and EndTime fields comply with the following format: "YYYY-MM-DD HH:MM:SS".
+Furthermore, it also checks if EndTime is earlier than StartTime.
+A velidation error message would return if any of the above fails.
+
+Duplicated EventNames are allow in the system.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON: N/A
+
+
+------------------------------------------
+
+Operation: PUT /events
+Parameters: EventId as integer, mandatory
+			      EventName as string, optional
+			      StartTime as string, optional
+			      EndTime as string, optional
+			      Location as string, optional
+
+A minimum of one field of EventName, StartTime, EndTime, or Location is required.
+The system updates an event by EventId with the fields provided, hence multiple fields update are allowed.
+
+If StartTime or EndTime is provided, it checks if the StartTime and EndTime fields comply with the following format: "YYYY-MM-DD HH:MM:SS".
+Furthermore, it also checks if EndTime is earlier than StartTime.
+A velidation error message would return if any of the above fails.
+
+Duplicated EventNames are allow in the system.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON Data: N/A
+
+
+
+------------------------------------------
+
+Operation: DELETE /events
+Parameters: EventId as integer, mandatory
+
+The system deletes an event by EventId and also deletes any associated records, namely the confirmed attendance.
+
+If the provided EventId is not found, it will return an error message.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON Data: N/A
+
+
+------------------------------------------
+
+Operation: GET /attendees
+Parameters: AttendeeEmail as string, optional
+
+If AttendeeEmail is provided, the system will retrieve data based on AttendeeEmail.
+If no parameter is provided, the system will return all the attendees.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON Data: AttendeeId
+				          AttendeeEmail
+				  
+
+------------------------------------------
+
+Operation: POST /attendees
+Parameters: AttendeeEmail as string, mandatory
+
+A validation checks on the legitimatize of the email address.  If the email address is not well formed, it will return an error message.  It also checks if the email address already exists in the system.  An error message would return if it alreay exists.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON Data: N/A
+
+
+------------------------------------------
+
+Operation: DELETE /attendees
+Parameters: AttendeeEmail as string, mandatory
+
+The system deletes an attendee by AttendeeEmail and also deletes any associated records, namely the confirmed attendance.
+
+If the provided Attendee is not found, it will return an error message.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON Data: N/A
+
+
+------------------------------------------
+
+Operation: PUT /attendees
+Parameters: AttendeeId as integer, mandatory
+		      	AttendeeEmail as string, mandatory
+
+The system updates an attendee by AttendeeId with AttendeeEmail provided.
+
+If the provided Attendee is not found, it will return an error message.
+If the Attendee Email is not provided, it will return an error message.
+
+A validation checks on the legitimatize of the email address.  If the email address is not well formed, it will return an error message.  
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON Data: N/A
+
+
+------------------------------------------
+
+Operation: GET /invites
+Parameters: AttendeeEmail as string, optional
+			      EventName as string, optional
+			      StartTime as string, optional
+			      EndTime as string, optional
+			      Location as string, optional
+
+All the fields are optionals.  If any fields not provide, the system would return all the confirmed attendance.
+If any fields are provided, the system would return the fitting subset of the confirmed attendance.
+
+The system checks if the StartTime and EndTime search parameters to see if EndTime is earlier than StartTime.
+A velidation error message would return if EndTime is earlier than StartTime.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 
+Return JSON: EventId
+			       EventName
+			       Location
+			       StartTime
+			       EndTime
+			       AttendeeId
+			       AttendeeEmail
+			 
+
+------------------------------------------
+
+Operation: PUT /invites
+Parameters: EventName as integer, mandatory
+		        AttendeeEmail as string, mandatory
+
+The system updates an invitation attendance by EventName and AttendanceEmail.  This is essentially signing up an attendance to an event.
+
+If the provided EventName or AttendeeEmail are not provided or are not found, it will return an error message.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON Data: N/A
+
+
+------------------------------------------
+
+Operation: DELETE /invites
+Parameters: EventName as integer, mandatory
+	          AttendeeEmail as string, mandatory
+
+The system updates an invitation attendance by EventName and AttendanceEmail.  This is essentially removing an attendance from an event.
+
+If the provided EventName or AttendeeEmail are not provided or are not found, it will return an error message.
+
+If operation is successful, it will return HTTP code 200.
+Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+
+Return Result Format: success or failed message
+Return HTTP Code: 200 or 404
+Return JSON Data: N/A

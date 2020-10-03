@@ -47,4 +47,4 @@ Deployment
 
   6. The base web address is http://127.0.0.1:5002/
 
-  7. For more information, please consult the API documentation page at http://127.0.0.1:5002/
+  7. For more information, please consult the APIDocumentation.txt or API documentation page at http://127.0.0.1:5002/

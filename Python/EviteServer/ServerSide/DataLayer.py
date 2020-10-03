@@ -306,14 +306,3 @@ class DataLayer:
     except Exception as ex:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
-
-#data = DataLayer()
-# print(data.FindAllEvents())
-# print(data.FindEvent(2, None))
-# print(data.FindAllAttendees())
-# print(data.FindAttendee("adam@abc.com"))
-# print(data.FindAllConfirmedInvitations())
-# print(data.FindConfirmedInvitations(None, "Hong Kong", None, None, None))
-#data.CreateEvent("Mid Autumn Festival", "Singapore", "2020-10-04 00:00:00", "2020-10-01 00:00:00")
-#data.UpdateEvent(4, None, None, "2020-10-01 00:00:00", "2020-09-30 00:00:00")
-#print(data.FindConfirmedInvitations(None, None, None, None, None))
