@@ -162,9 +162,9 @@ def DeleteAttendee():
 def UpdateAttendee():
   try:
     if attendeeIdKeyWord not in request.args:
-      raise ValueError("Attendee is not deleted.  Attendee Id is not provided.  Please resubmit with the correct parameters.")
+      raise ValueError("Attendee is not updated.  Attendee Id is not provided.  Please resubmit with the correct parameters.")
     if emailKeyWord not in request.args:
-      raise ValueError("Attendee is not deleted.  Attendee Email is not provided.  Please resubmit with the correct parameters.")
+      raise ValueError("Attendee is not updated.  Attendee Email is not provided.  Please resubmit with the correct parameters.")
 
     attendeeId = int(request.args[attendeeIdKeyWord])
     email = request.args[emailKeyWord]
@@ -206,8 +206,13 @@ def FindConfirmedInvitations():
 @app.route('/invites', methods=['PUT'])
 def UpdateInvitationAttendance():
   try:
+    if eventNameKeyWord not in request.args:
+      raise ValueError("Invitation Attendance is not updated.  Event Name is not provided.  Please resubmit with the correct parameters.")
+    if emailKeyWord not in request.args:
+      raise ValueError("Invitation Attendance is not updated.  Attendee Email is not provided.  Please resubmit with the correct parameters.")
+
     dataLayer = DataLayer()
-    eventName, attendeeName = None, None
+    eventName, email = None, None
 
     if eventNameKeyWord in request.args:
       eventName = request.args[eventNameKeyWord]
@@ -224,8 +229,13 @@ def UpdateInvitationAttendance():
 @app.route('/invites', methods=['DELETE'])
 def RemoveInvitationAttendance():
   try:
+    if eventNameKeyWord not in request.args:
+      raise ValueError("Invitation Attendance is not updated.  Event Name is not provided.  Please resubmit with the correct parameters.")
+    if emailKeyWord not in request.args:
+      raise ValueError("Invitation Attendance is not updated.  Attendee Email is not provided.  Please resubmit with the correct parameters.")
+
     dataLayer = DataLayer()
-    eventName, attendeeName = None, None
+    eventName, email = None, None
 
     if eventNameKeyWord in request.args:
       eventName = request.args[eventNameKeyWord]
