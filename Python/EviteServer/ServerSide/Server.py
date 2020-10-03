@@ -93,15 +93,15 @@ def UpdateEvent():
 @app.route('/events', methods=['DELETE'])
 def DeleteEvent():
   try:
-    if eventNameKeyWord not in request.args:
-      raise ValueError("Event is not deleted.  Event Name is not provided.  Please resubmit with the correct parameters.")
+    if eventIdKeyWord not in request.args:
+      raise ValueError("Event is not deleted.  Event Id is not provided.  Please resubmit with the correct parameters.")
     
-    eventName = request.args[eventNameKeyWord]
+    eventId = request.args[eventIdKeyWord]
     
     dataLayer = DataLayer()
-    dataLayer.DeleteEvent(None, eventName)    
+    dataLayer.DeleteEvent(None, eventId)    
 
-    return "Event '{}' and the confirmed attendees have been deleted successful.".format(eventName), 200
+    return "Event Id '{}' and the confirmed attendees have been deleted successful.".format(eventId), 200
   
   except Exception as ex:
     return str(ex), 404

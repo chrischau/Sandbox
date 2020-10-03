@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS EventsXAttendees;
 
 CREATE TABLE Events (
 	EventId INTEGER NOT NULL,
-	EventName TEXT NOT NULL UNIQUE,
+	EventName TEXT NOT NULL,
 	StartTime TEXT NOT NULL,
 	EndTime TEXT NOT NULL,
 	Location TEXT NOT NULL,

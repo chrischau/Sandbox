@@ -4,11 +4,11 @@ import json
 
 class Helper:
   @staticmethod
-  def ValidateTimeFormat(timeStamp, errorMessage):
+  def ValidateTimeFormat(timeStamp, errorMessage = "Incorrect datetime format.  It should be YYYY-MM-DD HH:MM:SS"):
     try:
       datetime.datetime.strptime(timeStamp, '%Y-%m-%d %H:%M:%S')
     except ValueError:
-      raise ValueError("Incorrect datetime format.  It should be YYYY-MM-DD HH:MM:SS")
+      raise ValueError(errorMessage)
   
   
   @staticmethod
@@ -31,6 +31,11 @@ class Helper:
       configFile = json.load(json_data_file)
     
     return configFile
-  
+
+  @staticmethod
+  def ValidateEndTimeIsAfterStartTime(startTime, endTime):
+    if (endTime < startTime):
+      raise ValueError("EndTime cannot be earlier than StartTime")
+    
   
   

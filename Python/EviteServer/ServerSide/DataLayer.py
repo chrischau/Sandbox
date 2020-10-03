@@ -49,10 +49,11 @@ class DataLayer:
   def CreateEvent(self, eventName, location, startTime, endTime):
     sqlStatement = self.sql.SelectAllEventsSQL + " WHERE EventName = '{}'".format(eventName)
     
-    self.__ValidateRecordDoesNotExist(sqlStatement, "Event with the same name '{}' already exist.  Please choose another name.".format(eventName))
+    #self.__ValidateRecordDoesNotExist(sqlStatement, "Event with the same name '{}' already exist.  Please choose another name.".format(eventName))
     self.helper.ValidateTimeFormat(startTime, "Incorrect Start Time datetime format.  It should be YYYY-MM-DD HH:MM:SS")
     self.helper.ValidateTimeFormat(endTime, "Incorrect End Time datetime format.  It should be YYYY-MM-DD HH:MM:SS")
-
+    self.helper.ValidateEndTimeIsAfterStartTime(startTime, endTime)
+    
     insertStatement = self.sql.InsertEventSQL.format(eventName, location, startTime, endTime)
 
     try:
@@ -64,10 +65,10 @@ class DataLayer:
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
 
   
-  def DeleteEvent(self, eventName):
-    event = self.FindEvent(None, eventName)
+  def DeleteEvent(self, eventId):
+    event = self.FindEvent(eventId, None)
     if (event is None or len(event) == 0):
-      raise ValueError("Event '{}' is not found, or does not exist.".format(eventName))
+      raise ValueError("Event Id '{}' is not found, or does not exist.".format(eventId))
 
     try:
       eventId = event[0][0]
@@ -86,24 +87,37 @@ class DataLayer:
     errorMessage = "Event Id '{}' does not exist.".format(eventId)
     self.__ValidateIfExist(self.sql.SelectAllEventsSQL, whereClause, errorMessage)
 
-    if ((eventName is None and len(eventName) == 0)
-        and (location is None and len(location) == 0)
-        and (startTime is None and len(startTime) == 0)
-        and (endTime is None and len(endTime) == 0)):
+    if ((eventName is None or len(eventName) == 0)
+        and (location is None or len(location) == 0)
+        and (startTime is None or len(startTime) == 0)
+        and (endTime is None or len(endTime) == 0)):
       raise ValueError("No update values have been provided.  Event is not updated.")
     
+    event = self.FindEvent(eventId, None)
+    newStartTime = event[0]["StartTime"]
+    newEndTime = event[0]["EndTime"]
+
     updateSQL = self.sql.UpdateEventSQL
 
     if (eventName is not None and len(eventName) > 0):
       updateSQL += " EventName = '{}',".format(eventName)
+    
     if (location is not None and len(location) > 0):
       updateSQL += " Location = '{}',".format(location)
+
     if (startTime is not None and len(startTime) > 0):
+      self.helper.ValidateTimeFormat(startTime)
       updateSQL += " StartTime = '{}',".format(startTime)
+      newStartTime = startTime
+    
     if (endTime is not None and len(endTime) > 0):
+      self.helper.ValidateTimeFormat(endTime)
       updateSQL += " EndTime = '{}',".format(endTime)
+      newEndTime = endTime
     
     updateSQL = updateSQL[:-1] + " WHERE EventId = {}".format(eventId)
+    
+    self.helper.ValidateEndTimeIsAfterStartTime(newStartTime, newEndTime)
     
     try:
       self.cursor.execute(updateSQL)
@@ -117,7 +131,7 @@ class DataLayer:
   def CreateAttendee(self, email):
     sqlStatement = self.sql.SelectAllAttendeeSQL + " WHERE AttendeeEmail = '{}'".format(email)
     
-    self.__ValidateRecordDoesNotExist(sqlStatement, "Attendee with the same email '{}' already exist.  Please verify and adjust accordingly.".format(email))
+    #self.__ValidateRecordDoesNotExist(sqlStatement, "Attendee with the same email '{}' already exist.  Please verify and adjust accordingly.".format(email))
     self.helper.ValidateEmailStructure(email)    
     
     insertStatement = self.sql.InsertAttendeeSQL.format(email)
@@ -191,11 +205,11 @@ class DataLayer:
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
 
 
-  def __ValidateRecordDoesNotExist(self, sqlStatement, errorMessage):
-    self.cursor.execute(sqlStatement)
-    row = self.cursor.fetchone()
-    if (row is not None):
-      raise ValueError(errorMessage)
+  # def __ValidateRecordDoesNotExist(self, sqlStatement, errorMessage):
+  #   self.cursor.execute(sqlStatement)
+  #   row = self.cursor.fetchone()
+  #   if (row is not None):
+  #     raise ValueError(errorMessage)
 
   
   def FindAllConfirmedInvitations(self):
@@ -308,10 +322,12 @@ class DataLayer:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
 
-# data = DataLayer()
+#data = DataLayer()
 # print(data.FindAllEvents())
 # print(data.FindEvent(2, None))
 # print(data.FindAllAttendees())
 # print(data.FindAttendee("adam@abc.com"))
 # print(data.FindAllConfirmedInvitations())
 # print(data.FindConfirmedInvitations(None, "Hong Kong", None, None, None))
+#data.CreateEvent("Mid Autumn Festival", "Singapore", "2020-10-04 00:00:00", "2020-10-01 00:00:00")
+#data.UpdateEvent(4, None, None, "2020-10-01 00:00:00", "2020-09-30 00:00:00")

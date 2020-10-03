@@ -5,7 +5,6 @@ TODO
 3.  Documentation on the API, HTML page
 4.  Documentation on the code
 8.  Send email notification for events or attendee update ??? business requirement is not clear
-11. Add field name to return JSON dump?
 12. ORM for database access
 13. 
 
@@ -16,4 +15,4 @@ DONE
 9.  Config files to change values
 10. Distinguish Update vs Insert of attendance, and removal
 5.  Deployment procedure, Read Me file, pre requisites
-
+11. Add field name to return JSON dump
