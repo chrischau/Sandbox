@@ -7,8 +7,8 @@ from APIDocumentation import APIDocumentation
 
 app = Flask(__name__)
 
-endTimeKeyWord, eventIdKeyWord, locationKeyWord, eventNameKeyWord, startTimeKeyWord = "endtime", "eventid", "location", "eventname", "starttime"
-emailKeyWord,attendeeIdKeyWord = "email","attendeeId"
+endTimeKeyWord, eventIdKeyWord, locationKeyWord, eventNameKeyWord, startTimeKeyWord = "EndTime", "EventId", "Location", "EventName", "StartTime"
+emailKeyWord,attendeeIdKeyWord = "AttendeeEmail","AttendeeId"
 
 
 @app.route('/', methods=['GET'])

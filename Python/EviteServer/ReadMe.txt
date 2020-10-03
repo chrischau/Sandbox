@@ -27,7 +27,8 @@ Description
 Pre-requisite
   - python 3
   - SQLite database
-
+  - Microsoft Windows (optional)
+  
 
 Deployment
   1. Unzip the file and deploy all the content in your desired directory.
@@ -42,6 +43,7 @@ Deployment
      Open it and confirm the correct location of the "DatabasePath" value.
   
   5. Kick off the "StartServer.bat".  Your EventServer API server is ready to use.
+     If you are not using Windows, you will need to kick off the Server.py file in your environment.
 
   6. The base web address is http://127.0.0.1:5002/
 

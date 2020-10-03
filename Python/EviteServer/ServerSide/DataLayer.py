@@ -22,7 +22,7 @@ class DataLayer:
 
   def FindAllEvents(self):
     self.cursor.execute(self.sql.SelectAllEventsSQL)
-    results = self.cursor.fetchall()        
+    results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
 
     return results
 
@@ -31,15 +31,15 @@ class DataLayer:
     if (eventId != None):
       whereClause = " WHERE EventId = {}".format(eventId)
       self.cursor.execute(self.sql.SelectAllEventsSQL + whereClause)
-      results = self.cursor.fetchall()        
-
+      results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
+      
       return results
     
     if (eventName != None and eventName != ''):
       whereClause = " WHERE EventName = '{}'".format(eventName)
       self.cursor.execute(self.sql.SelectAllEventsSQL + whereClause)
-      results = self.cursor.fetchall()        
-      
+      results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
+
       return results
 
     else:
@@ -133,7 +133,7 @@ class DataLayer:
 
   def FindAllAttendees(self):
     self.cursor.execute(self.sql.SelectAllAttendeeSQL)
-    results = self.cursor.fetchall()        
+    results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
     
     return results
 
@@ -142,7 +142,7 @@ class DataLayer:
     if (email != None and email != ''):
       whereClause = " WHERE AttendeeEmail = '{}'".format(email)
       self.cursor.execute(self.sql.SelectAllAttendeeSQL + whereClause)
-      results = self.cursor.fetchall()        
+      results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
 
       return results
 
@@ -200,7 +200,7 @@ class DataLayer:
   
   def FindAllConfirmedInvitations(self):
     self.cursor.execute(self.sql.SelectAllEXASQL)
-    results = self.cursor.fetchall()        
+    results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
     
     return results
 
@@ -224,11 +224,21 @@ class DataLayer:
       whereClause += " AND E.EndTime <= '{}'".format(endTime)
     
     self.cursor.execute(self.sql.SelectAllEXASQL + whereClause + " ORDER BY StartTime ASC")
-    results = self.cursor.fetchall()        
+    results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
     
     return results
 
+
+  @staticmethod
+  def __AggregateData(columnsDescription, data):
+    columns = [column[0] for column in columnsDescription]
+    results = []
+    for row in data:
+      results.append(dict(zip(columns, row)))
+
+    return results
   
+
   def __FindFirstElement(self, sqlStatement, whereClause, errorObject, element):
     self.cursor.execute(sqlStatement + whereClause.format(element))
     result = self.cursor.fetchone()
@@ -297,3 +307,11 @@ class DataLayer:
     except Exception as ex:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
+
+# data = DataLayer()
+# print(data.FindAllEvents())
+# print(data.FindEvent(2, None))
+# print(data.FindAllAttendees())
+# print(data.FindAttendee("adam@abc.com"))
+# print(data.FindAllConfirmedInvitations())
+# print(data.FindConfirmedInvitations(None, "Hong Kong", None, None, None))
