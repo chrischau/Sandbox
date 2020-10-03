@@ -65,6 +65,48 @@ def CreateEvent():
     return str(ex), 404
 
 
+@app.route('/events', methods=['PUT'])
+def UpdateEvent():
+  try:
+    if eventIdKeyWord not in request.args:
+      raise ValueError("Event is not updated.  Event Id is not provided.  Please resubmit with the correct parameters.")
+    
+    if eventIdKeyWord in request.args:
+      eventName = request.args[eventNameKeyWord]
+    if startTimeKeyWord in request.args:
+      startTime = request.args[startTimeKeyWord]
+    if endTimeKeyWord in request.args:
+      endTime = request.args[endTimeKeyWord]
+    if locationKeyWord in request.args:
+      location = request.args[locationKeyWord]
+
+    eventId = request.args[eventIdKeyWord]
+
+    dataLayer = DataLayer()
+    dataLayer.UpdateEvent(eventId, eventName, location, startTime, endTime)    
+
+    return "Event '{}' has been updated successful.".format(eventName), 200
+  
+  except Exception as ex:
+    return str(ex), 404
+
+@app.route('/events', methods=['DELETE'])
+def DeleteEvent():
+  try:
+    if eventNameKeyWord not in request.args:
+      raise ValueError("Event is not deleted.  Event Name is not provided.  Please resubmit with the correct parameters.")
+    
+    eventName = request.args[eventNameKeyWord]
+    
+    dataLayer = DataLayer()
+    dataLayer.DeleteEvent(None, eventName)    
+
+    return "Event '{}' and the confirmed attendees have been deleted successful.".format(eventName), 200
+  
+  except Exception as ex:
+    return str(ex), 404
+
+
 @app.route('/attendees', methods=['GET'])
 def FindAttendees():
   try:
