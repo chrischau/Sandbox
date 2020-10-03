@@ -12,10 +12,13 @@ class DataLayer:
   selectAllEventsSQL = "SELECT EventId, EventName, Location, StartTime, EndTime FROM Events"
   insertEventSQL = "INSERT INTO Events(EventName, Location, StartTime, EndTime) VALUES ('{}', '{}', '{}', '{}')"
   deleteEventSQL = "DELETE FROM Events"
+  updateEventSQL = "UPDATE Events SET"
   
   # Attendee related SQLs
   selectAllAttendeeSQL = "SELECT AttendeeId, AttendeeEmail FROM Attendees"
   insertAttendeeSQL = "INSERT INTO Attendees(AttendeeEmail) VALUES ('{}')"
+  deleteAttendeeSQL = "DELETE FROM Attendees"
+  updateAttendeeSQL = "Update Attendees SET"
 
   # EventsXAttendees related SQLs
   findAllEXASQL = "SELECT E.EventId, E.EventName, E.Location, E.StartTime, E.EndTime, A.AttendeeId, A.AttendeeEmail FROM Events AS E \
@@ -124,7 +127,7 @@ class DataLayer:
         and (endTime is None and len(endTime) == 0)):
       raise ValueError("No update values have been provided.  Event is not updated.")
     
-    updateSQL = "UPDATE Events SET"
+    updateSQL = self.updateEventSQL
 
     if (eventName is not None and len(eventName) > 0):
       updateSQL += " EventName = '{}',".format(eventName)
@@ -144,8 +147,6 @@ class DataLayer:
     except Exception as ex:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
-
-
 
 
   def CreateAttendee(self, email):
@@ -173,7 +174,6 @@ class DataLayer:
 
   
   def FindAttendee(self, email):
-    #TODO paging data if too many data at once
     if (email != None and email != ''):
       whereClause = " WHERE AttendeeEmail = '{}'".format(email)
       self.cursor.execute(self.selectAllAttendeeSQL + whereClause)
@@ -183,6 +183,47 @@ class DataLayer:
 
     else:
       return None
+
+  
+  def DeleteAttendee(self, email):
+    attendee = self.FindAttendee(email)
+    if (attendee is None or len(attendee) == 0):
+      raise ValueError("Attendee with email '{}' is not found, or does not exist.".format(email))
+
+    try:
+      attendeeId = attendee[0][0]
+      whereClause = " WHERE AttendeeId = {}".format(attendeeId)      
+      self.cursor.execute(self.deleteEXASQL + whereClause) # TODO maybe it is a good idea to report how many were deleted
+      self.cursor.execute(self.deleteAttendeeSQL + whereClause)
+      self.sqliteConnection.commit()
+      
+    except Exception as ex:
+      self.sqliteConnection.rollback()
+      raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
+
+
+  def UpdateAttendee(self, attendeeId, email):
+    whereClause = " WHERE AttendeeId = {}".format(attendeeId)
+    errorMessage = "Attendee Id '{}' does not exist.".format(attendeeId)
+    self.__ValidateIfExist(self.selectAllAttendeeSQL, whereClause, errorMessage)
+
+    if (email is None and len(email) == 0):
+      raise ValueError("No update values have been provided.  Attendee is not updated.")
+    
+    updateSQL = self.updateAttendeeSQL
+
+    if (email is not None and len(email) > 0):
+      updateSQL += " AttendeeEmail = '{}',".format(email)
+    
+    updateSQL = updateSQL[:-1] + " WHERE AttendeeId = {}".format(attendeeId)
+    
+    try:
+      self.cursor.execute(updateSQL)
+      self.sqliteConnection.commit()
+
+    except Exception as ex:
+      self.sqliteConnection.rollback()
+      raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
 
 
   def __ValidateEmailStructure(self, email):
@@ -302,10 +343,4 @@ class DataLayer:
     except Exception as ex:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
-
- 
-
-# data = DataLayer()
-# data.UpdateEvent(2, "Test Event 2", "Tokyo", "2020-10-03 09:00:00", "2020-10-05 17:00:00")
-# data.RemoveAttendanceInvitation("Test Event 1", "adam@abc.com")
 

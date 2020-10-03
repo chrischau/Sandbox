@@ -7,8 +7,8 @@ import DataLayer
 
 app = Flask(__name__)
 
-emailKeyWord, locationKeyWord, eventNameKeyWord, startTimeKeyWord = "email", "location", "eventname", "starttime"
-endTimeKeyWord, eventIdKeyWord, attendeeIdKeyWord = "endtime", "eventid", "attendeeId"
+endTimeKeyWord, eventIdKeyWord, locationKeyWord, eventNameKeyWord, startTimeKeyWord = "endtime", "eventid", "location", "eventname", "starttime"
+emailKeyWord,attendeeIdKeyWord = "email","attendeeId"
 
 
 @app.route('/', methods=['GET'])
@@ -90,6 +90,7 @@ def UpdateEvent():
   except Exception as ex:
     return str(ex), 404
 
+
 @app.route('/events', methods=['DELETE'])
 def DeleteEvent():
   try:
@@ -136,6 +137,43 @@ def CreateAttendee():
     dataLayer.CreateAttendee(email)
 
     return "Attendee '{}' has been created successful.".format(email), 200
+  
+  except Exception as ex:
+    return str(ex), 404
+
+
+@app.route('/attendees', methods=['DELETE'])
+def DeleteAttendee():
+  try:
+    if emailKeyWord not in request.args:
+      raise ValueError("Attendee is not deleted.  Attendee email is not provided.  Please resubmit with the correct parameters.")
+
+    email = request.args[emailKeyWord]
+
+    dataLayer = DataLayer()
+    dataLayer.DeleteAttendee(email)
+
+    return "Attendee '{}' has been deleted successful.".format(email), 200
+  
+  except Exception as ex:
+    return str(ex), 404
+
+
+@app.route('/attendees', methods=['PUT'])
+def DeleteAttendee():
+  try:
+    if attendeeIdKeyWord not in request.args:
+      raise ValueError("Attendee is not deleted.  Attendee Id is not provided.  Please resubmit with the correct parameters.")
+
+    attendeeId = request.args[eventIdKeyWord]
+
+    if emailKeyWord in request.args:
+      email = request.args[emailKeyWord]
+
+    dataLayer = DataLayer()
+    dataLayer.UpdateAttendee(attendeeId, email)
+
+    return "Attendee '{}' has been updated successful.".format(email), 200
   
   except Exception as ex:
     return str(ex), 404
