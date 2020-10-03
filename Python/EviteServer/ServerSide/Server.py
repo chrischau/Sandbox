@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify
 import sys
 import traceback
 import logging
-import DataLayer
-
+from DataLayer import DataLayer
+from APIDocumentation import APIDocumentation
 
 app = Flask(__name__)
 
@@ -13,9 +13,8 @@ emailKeyWord,attendeeIdKeyWord = "email","attendeeId"
 
 @app.route('/', methods=['GET'])
 def HomePageInstruction():
-  webpageHelpDoc = "<h1>Evite Server API</h1>"
-
-  return webpageHelpDoc
+  apiDoc = APIDocumentation()
+  return apiDoc.APIDocumentation
 
 
 @app.route('/events', methods=['GET'])
@@ -71,7 +70,7 @@ def UpdateEvent():
     if eventIdKeyWord not in request.args:
       raise ValueError("Event is not updated.  Event Id is not provided.  Please resubmit with the correct parameters.")
     
-    if eventIdKeyWord in request.args:
+    if eventNameKeyWord in request.args:
       eventName = request.args[eventNameKeyWord]
     if startTimeKeyWord in request.args:
       startTime = request.args[startTimeKeyWord]
@@ -80,7 +79,7 @@ def UpdateEvent():
     if locationKeyWord in request.args:
       location = request.args[locationKeyWord]
 
-    eventId = request.args[eventIdKeyWord]
+    eventId = int(request.args[eventIdKeyWord])
 
     dataLayer = DataLayer()
     dataLayer.UpdateEvent(eventId, eventName, location, startTime, endTime)    
@@ -160,12 +159,12 @@ def DeleteAttendee():
 
 
 @app.route('/attendees', methods=['PUT'])
-def DeleteAttendee():
+def UpdateAttendee():
   try:
     if attendeeIdKeyWord not in request.args:
       raise ValueError("Attendee is not deleted.  Attendee Id is not provided.  Please resubmit with the correct parameters.")
 
-    attendeeId = request.args[eventIdKeyWord]
+    attendeeId = int(request.args[attendeeIdKeyWord])
 
     if emailKeyWord in request.args:
       email = request.args[emailKeyWord]
@@ -233,7 +232,7 @@ def RemoveInvitationAttendance():
     if emailKeyWord in request.args:
       email = request.args[emailKeyWord]
         
-    results = dataLayer.UpdateAttendanceInvitation(eventName, email)
+    results = dataLayer.RemoveAttendanceInvitation(eventName, email)
     return "Attendee '{}' has been remove from event '{}'.".format(email, eventName), 200
 
   except Exception as ex:
