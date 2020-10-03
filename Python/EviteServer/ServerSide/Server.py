@@ -163,12 +163,12 @@ def UpdateAttendee():
   try:
     if attendeeIdKeyWord not in request.args:
       raise ValueError("Attendee is not deleted.  Attendee Id is not provided.  Please resubmit with the correct parameters.")
+    if emailKeyWord not in request.args:
+      raise ValueError("Attendee is not deleted.  Attendee Email is not provided.  Please resubmit with the correct parameters.")
 
     attendeeId = int(request.args[attendeeIdKeyWord])
-
-    if emailKeyWord in request.args:
-      email = request.args[emailKeyWord]
-
+    email = request.args[emailKeyWord]
+    
     dataLayer = DataLayer()
     dataLayer.UpdateAttendee(attendeeId, email)
 

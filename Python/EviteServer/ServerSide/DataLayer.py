@@ -129,11 +129,10 @@ class DataLayer:
 
 
   def CreateAttendee(self, email):
-    sqlStatement = self.sql.SelectAllAttendeeSQL + " WHERE AttendeeEmail = '{}'".format(email)
-    
-    #self.__ValidateRecordDoesNotExist(sqlStatement, "Attendee with the same email '{}' already exist.  Please verify and adjust accordingly.".format(email))
     self.helper.ValidateEmailStructure(email)    
+    self.__ValidateRecordDoesNotExist(sqlStatement, "Attendee with the same email '{}' already exist.  Please verify and adjust accordingly.".format(email))
     
+    sqlStatement = self.sql.SelectAllAttendeeSQL + " WHERE AttendeeEmail = '{}'".format(email)
     insertStatement = self.sql.InsertAttendeeSQL.format(email)
 
     try:
@@ -185,16 +184,9 @@ class DataLayer:
     whereClause = " WHERE AttendeeId = {}".format(attendeeId)
     errorMessage = "Attendee Id '{}' does not exist.".format(attendeeId)
     self.__ValidateIfExist(self.sql.SelectAllAttendeeSQL, whereClause, errorMessage)
-
-    if (email is None and len(email) == 0):
-      raise ValueError("No update values have been provided.  Attendee is not updated.")
+    self.helper.ValidateEmailStructure(email)
     
-    updateSQL = self.sql.UpdateAttendeeSQL
-
-    if (email is not None and len(email) > 0):
-      updateSQL += " AttendeeEmail = '{}',".format(email)
-    
-    updateSQL = updateSQL[:-1] + " WHERE AttendeeId = {}".format(attendeeId)
+    updateSQL = self.sql.UpdateAttendeeSQL + " AttendeeEmail = '{}',".format(email) + " WHERE AttendeeId = {}".format(attendeeId)
     
     try:
       self.cursor.execute(updateSQL)
@@ -205,20 +197,13 @@ class DataLayer:
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
 
 
-  # def __ValidateRecordDoesNotExist(self, sqlStatement, errorMessage):
-  #   self.cursor.execute(sqlStatement)
-  #   row = self.cursor.fetchone()
-  #   if (row is not None):
-  #     raise ValueError(errorMessage)
+  def __ValidateRecordDoesNotExist(self, sqlStatement, errorMessage):
+    self.cursor.execute(sqlStatement)
+    row = self.cursor.fetchone()
+    if (row is not None):
+      raise ValueError(errorMessage)
 
   
-  def FindAllConfirmedInvitations(self):
-    self.cursor.execute(self.sql.SelectAllEXASQL)
-    results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
-    
-    return results
-
-
   def FindConfirmedInvitations(self, email, location, eventName, startTime, endTime):
     whereClause = " WHERE 1 = 1"  #this is created to allow additional where clause to be added below
 
@@ -331,3 +316,4 @@ class DataLayer:
 # print(data.FindConfirmedInvitations(None, "Hong Kong", None, None, None))
 #data.CreateEvent("Mid Autumn Festival", "Singapore", "2020-10-04 00:00:00", "2020-10-01 00:00:00")
 #data.UpdateEvent(4, None, None, "2020-10-01 00:00:00", "2020-09-30 00:00:00")
+#print(data.FindConfirmedInvitations(None, None, None, None, None))
