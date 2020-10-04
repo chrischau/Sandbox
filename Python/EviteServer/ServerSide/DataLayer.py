@@ -76,7 +76,6 @@ class DataLayer:
       raise ValueError("Event Id '{}' is not found, or does not exist.".format(eventId))
 
     try:
-      eventId = event[0][0]
       whereClause = " WHERE EventId = {}".format(eventId)      
       self.cursor.execute(self.sql.DeleteEXASQL + whereClause) # TODO maybe it is a good idea to report how many were deleted
       self.cursor.execute(self.sql.DeleteEventSQL + whereClause)
@@ -135,9 +134,11 @@ class DataLayer:
 
   def CreateAttendee(self, email):
     self.helper.ValidateEmailStructure(email)    
-    self.__ValidateRecordDoesNotExist(sqlStatement, "Attendee with the same email '{}' already exist.  Please verify and adjust accordingly.".format(email))
     
     sqlStatement = self.sql.SelectAllAttendeeSQL + " WHERE AttendeeEmail = '{}'".format(email)
+    self.__ValidateRecordDoesNotExist(sqlStatement, "Attendee with the same email '{}' already exist.  Please verify and adjust accordingly.".format(email))
+    
+    
     insertStatement = self.sql.InsertAttendeeSQL.format(email)
 
     try:
@@ -174,7 +175,7 @@ class DataLayer:
       raise ValueError("Attendee with email '{}' is not found, or does not exist.".format(email))
 
     try:
-      attendeeId = attendee[0][0]
+      attendeeId = attendee[0]['AttendeeId']
       whereClause = " WHERE AttendeeId = {}".format(attendeeId)      
       self.cursor.execute(self.sql.DeleteEXASQL + whereClause) # TODO maybe it is a good idea to report how many were deleted
       self.cursor.execute(self.sql.DeleteAttendeeSQL + whereClause)
@@ -191,7 +192,7 @@ class DataLayer:
     self.__ValidateIfExist(self.sql.SelectAllAttendeeSQL, whereClause, errorMessage)
     self.helper.ValidateEmailStructure(email)
     
-    updateSQL = self.sql.UpdateAttendeeSQL + " AttendeeEmail = '{}',".format(email) + " WHERE AttendeeId = {}".format(attendeeId)
+    updateSQL = self.sql.UpdateAttendeeSQL + " AttendeeEmail = '{}'".format(email) + " WHERE AttendeeId = {}".format(attendeeId)
     
     try:
       self.cursor.execute(updateSQL)
@@ -258,7 +259,7 @@ class DataLayer:
     result = self.cursor.fetchone()
 
     if (result is not None):
-      raise ValueError("Email '{}' has already been added to event '{}'.".format(email, eventName))
+      raise ValueError("Email '{}' has already been added to event '{}'.  Invitation Attendance is not added.".format(email, eventName))
 
   
   def __ValidateIfExist(self, sqlStatement, whereClause, errorMessage):
@@ -289,7 +290,7 @@ class DataLayer:
     self.__ValidateIfDoesntExist(self.sql.SelectEXASQL, whereClause, eventId, eventName, attendeeId, email)
 
     try:
-      self.cursor.execute(self.sql.InsertEXASQL + whereClause.format(eventId, attendeeId))
+      self.cursor.execute(self.sql.InsertEXASQL.format(eventId, attendeeId))
       self.sqliteConnection.commit()
 
     except Exception as ex:
@@ -301,7 +302,7 @@ class DataLayer:
     eventId, attendeeId = self.__FindEventIdAttendeeId(eventName, email)
 
     whereClause = " WHERE EventId = {} AND AttendeeId = {}".format(eventId, attendeeId)
-    errorMessage = "Email '{}' has not been added to event '{}'.".format(email, eventName)
+    errorMessage = "Email '{}' was not added to event '{}'.  Invitation Attendance is not deleted.".format(email, eventName)
     self.__ValidateIfExist(self.sql.SelectEXASQL, whereClause, errorMessage)
 
     try:

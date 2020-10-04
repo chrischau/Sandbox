@@ -17,7 +17,7 @@ Description
   - update an attendee               : PUT /attendees
   - delete an attendee               : DELETE /attendees
   - find all events with attendees   : GET /invites
-  - assign an attendee to an event   : PUT /invites
+  - assign an attendee to an event   : POST /invites
   - remove attendee to an event      : DELETE /invites
 
   For additional information about each operation, please start the API server and find more information at this link.

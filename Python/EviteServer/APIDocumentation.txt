@@ -189,7 +189,7 @@ Return JSON: EventId
 
 ------------------------------------------
 
-Operation: PUT /invites
+Operation: POST /invites
 Parameters: EventName as integer, mandatory
 		        AttendeeEmail as string, mandatory
 

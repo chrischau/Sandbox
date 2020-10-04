@@ -297,7 +297,7 @@ class APIDocumentation:
         </ul>
       </li>
       <li>
-        <p><b><a href="#putInvites">PUT invites</a></p></b>
+        <p><b><a href="#putInvites">POST invites</a></p></b>
         <ul>
         <li>
           <p><b>Parameters</b><p>
