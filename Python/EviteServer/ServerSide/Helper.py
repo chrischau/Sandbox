@@ -16,7 +16,7 @@ class Helper:
     emailRegex = "[^@]+@[^@]+\.[^@]+"
 
     if (not re.match(emailRegex, email)):  
-      raise ValueError("Email provided '{}' is not a valid structured email.", email)     
+      raise ValueError("Email provided '{}' is not a valid structured email.".format(email)     )
         
 
   @staticmethod
@@ -34,8 +34,11 @@ class Helper:
 
   @staticmethod
   def ValidateEndTimeIsAfterStartTime(startTime, endTime):
+    Helper.ValidateTimeFormat(startTime, "StartTime has incorrect datetime format.  It should be YYYY-MM-DD HH:MM:SS.")
+    Helper.ValidateTimeFormat(endTime, "EndTime has incorrect datetime format.  It should be YYYY-MM-DD HH:MM:SS.")
+
     if (endTime < startTime):
-      raise ValueError("EndTime cannot be earlier than StartTime")
+      raise ValueError("EndTime cannot be earlier than StartTime.")
     
   
   
