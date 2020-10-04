@@ -4,6 +4,8 @@ from flask import Flask, json
 import sqlite3
 from SQLStatements import SQLStatements
 from Helper import Helper
+from EmailInvitation import EmailInvitation
+
 
 class DataLayer:
   
@@ -15,9 +17,14 @@ class DataLayer:
     configFile = self.helper.LoadConfigFile();
     databaseName = configFile['DatabasePath']
     
+    if (configFile['SMTPServerSenderEmail'] == ''):
+      self.ShouldSendEmail = False
+    else:
+      self.ShouldSendEmail = True
+    
     self.sqliteConnection = sqlite3.connect(databaseName)
     self.cursor = self.sqliteConnection.cursor()
-    #print("Database created and Successfully Connected to SQLite") #TODO logging
+    #print("Database created and Successfully Connected to SQLite") #TODO logging    
 
 
   def __del__ (self):
@@ -283,7 +290,7 @@ class DataLayer:
     return eventId, attendeeId
 
 
-  def UpdateAttendanceInvitation(self, eventName, email):
+  def AddAttendanceInvitation(self, eventName, email):
     eventId, attendeeId = self.__FindEventIdAttendeeId(eventName, email)
 
     whereClause = " WHERE EventId = {} AND AttendeeId = {}"
@@ -291,8 +298,12 @@ class DataLayer:
 
     try:
       self.cursor.execute(self.sql.InsertEXASQL.format(eventId, attendeeId))
+      
+      if (self.ShouldSendEmail):
+        emailInvitation = EmailInvitation()
+        emailInvitation.Send(email, eventName, EmailInvitation.SampleMessage())
+      
       self.sqliteConnection.commit()
-
     except Exception as ex:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
@@ -312,4 +323,3 @@ class DataLayer:
     except Exception as ex:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
-

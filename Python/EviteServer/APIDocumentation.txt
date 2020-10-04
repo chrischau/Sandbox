@@ -9,10 +9,10 @@ If EventId is not provide, the system will use eventname to retrieve data based 
 If no parameter is provided, the system will return all the events.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would return HTTP code 404 and the error message.
+Any error occurs would return HTTP code 403 and the error message.
 
 Result Result Format: JSON
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: EventId
 				          EventName
 				          Location
@@ -28,7 +28,7 @@ Parameters: EventName as string, mandatory
 			      EndTime as string, mandatory
 			      Location as string, mandatory
 
-All fields are required.  Any fields not provide would return an error message and HTTP code 404.
+All fields are required.  Any fields not provide would return an error message and HTTP code 403.
 
 The system checks if the StartTime and EndTime fields comply with the following format: "YYYY-MM-DD HH:MM:SS".
 Furthermore, it also checks if EndTime is earlier than StartTime.
@@ -37,10 +37,10 @@ A velidation error message would return if any of the above fails.
 Duplicated EventNames are allow in the system.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON: N/A
 
 
@@ -63,10 +63,10 @@ A velidation error message would return if any of the above fails.
 Duplicated EventNames are allow in the system.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: N/A
 
 
@@ -81,10 +81,10 @@ The system deletes an event by EventId and also deletes any associated records, 
 If the provided EventId is not found, it will return an error message.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: N/A
 
 
@@ -97,10 +97,10 @@ If AttendeeEmail is provided, the system will retrieve data based on AttendeeEma
 If no parameter is provided, the system will return all the attendees.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: AttendeeId
 				          AttendeeEmail
 				  
@@ -113,10 +113,10 @@ Parameters: AttendeeEmail as string, mandatory
 A validation checks on the legitimatize of the email address.  If the email address is not well formed, it will return an error message.  It also checks if the email address already exists in the system.  An error message would return if it alreay exists.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: N/A
 
 
@@ -130,10 +130,10 @@ The system deletes an attendee by AttendeeEmail and also deletes any associated 
 If the provided Attendee is not found, it will return an error message.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: N/A
 
 
@@ -151,10 +151,10 @@ If the Attendee Email is not provided, it will return an error message.
 A validation checks on the legitimatize of the email address.  If the email address is not well formed, it will return an error message.  
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: N/A
 
 
@@ -174,7 +174,7 @@ The system checks if the StartTime and EndTime search parameters to see if EndTi
 A velidation error message would return if EndTime is earlier than StartTime.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
 Return HTTP Code: 200 or 
@@ -197,11 +197,14 @@ The system updates an invitation attendance by EventName and AttendanceEmail.  T
 
 If the provided EventName or AttendeeEmail are not provided or are not found, it will return an error message.
 
+Once an attendee is added successfully, an email would automatically send to the attendee email address.
+However, if the config key "SMTPServerSenderEmail" is set as an empty string, the system will not send the email.
+
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: N/A
 
 
@@ -216,8 +219,8 @@ The system updates an invitation attendance by EventName and AttendanceEmail.  T
 If the provided EventName or AttendeeEmail are not provided or are not found, it will return an error message.
 
 If operation is successful, it will return HTTP code 200.
-Any error occurs would roll back the database transaction, return HTTP code 404 and the error message.
+Any error occurs would roll back the database transaction, return HTTP code 403 and the error message.
 
 Return Result Format: success or failed message
-Return HTTP Code: 200 or 404
+Return HTTP Code: 200 or 403
 Return JSON Data: N/A

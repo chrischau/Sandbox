@@ -28,6 +28,7 @@ Pre-requisite
   - python 3
   - SQLite database
   - Microsoft Windows (optional)
+  - SMTP server
   
 
 Deployment
@@ -40,7 +41,7 @@ Deployment
       You can find a sample database file has been provided in the Database folder, named "EventServer.db".
   
   4. Locate the file "config.json" in ServerSide folder.  
-     Open it and confirm the correct location of the "DatabasePath" value.
+     Open it and confirm the configuration values are correct.
   
   5. Kick off the "StartServer.bat".  Your EventServer API server is ready to use.
      If you are not using Windows, you will need to kick off the Server.py file in your environment.

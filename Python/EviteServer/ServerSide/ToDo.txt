@@ -2,7 +2,6 @@
 TODO
 2.  Logging
 4.  API Key
-8.  Send email notification for events or attendee update ??? business requirement is not clear
 12. ORM for database access
 13. 
 
@@ -16,3 +15,4 @@ DONE
 11. Add field name to return JSON dump
 3.  Documentation on the API, HTML page
 1.  Unit Test
+8.  Send email notification for events or attendee update ??? business requirement is not clear

@@ -1,9 +1,7 @@
 from flask import Flask, request, jsonify
-import sys
-import traceback
-import logging
 from DataLayer import DataLayer
 from APIDocumentation import APIDocumentation
+
 
 app = Flask(__name__)
 
@@ -35,7 +33,7 @@ def FindEvents():
       return jsonify(results), 200
 
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/events', methods=['POST'])
@@ -61,7 +59,7 @@ def CreateEvent():
     return "Event '{}' has been created successful.".format(name), 200
   
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/events', methods=['PUT'])
@@ -89,7 +87,7 @@ def UpdateEvent():
     return "Event '{}' has been updated successful.".format(eventName), 200
   
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/events', methods=['DELETE'])
@@ -106,7 +104,7 @@ def DeleteEvent():
     return "Event Id '{}' and the confirmed attendees have been deleted successful.".format(eventId), 200
   
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/attendees', methods=['GET'])
@@ -123,7 +121,7 @@ def FindAttendees():
       return jsonify(results), 200
 
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/attendees', methods=['POST'])
@@ -140,7 +138,7 @@ def CreateAttendee():
     return "Attendee '{}' has been created successful.".format(email), 200
   
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/attendees', methods=['DELETE'])
@@ -157,7 +155,7 @@ def DeleteAttendee():
     return "Attendee '{}' has been deleted successful.".format(email), 200
   
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/attendees', methods=['PUT'])
@@ -177,7 +175,7 @@ def UpdateAttendee():
     return "Attendee '{}' has been updated successful.".format(email), 200
   
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/invites', methods=['GET'])
@@ -202,7 +200,7 @@ def FindConfirmedInvitations():
     return jsonify(results), 200
 
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/invites', methods=['POST'])
@@ -217,11 +215,11 @@ def AddInvitationAttendance():
     eventName = request.args[eventNameKeyWord]
     email = request.args[emailKeyWord]
         
-    results = dataLayer.UpdateAttendanceInvitation(eventName, email)
+    results = dataLayer.AddAttendanceInvitation(eventName, email)
     return "Attendee '{}' has been added to event '{}'.".format(email, eventName), 200
 
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 @app.route('/api/v1/invites', methods=['DELETE'])
@@ -240,7 +238,7 @@ def RemoveInvitationAttendance():
     return "Attendee '{}' has been removed from event '{}'.".format(email, eventName), 200
 
   except Exception as ex:
-    return str(ex), 404
+    return str(ex), 403
 
 
 if (__name__ == '__main__'):

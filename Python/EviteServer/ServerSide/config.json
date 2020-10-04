@@ -1,3 +1,7 @@
 {
-  "DatabasePath" : "Database\\EventServer.db"
+  "DatabasePath" : "Database\\EventServer.db",
+  "SMTPServerAddress" : "127.0.0.1",
+  "SMTPServerPortNumber" : "25",
+  "SMTPServerSenderEmail" : "",
+  "SMTPServerSenderName" : "Evite Admin"
 }
