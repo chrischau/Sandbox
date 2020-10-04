@@ -5,7 +5,7 @@ sys.path.insert(1, 'C:\Development\GitHub\Sandbox\Python\EviteServer\ServerSide'
 from Helper import Helper
 
 
-class Helper_Test(unittest.TestCase):
+class Helper_Tests(unittest.TestCase):
 
   def test_ValidateTimeFormat_checks_empty_string(self):
     try:
@@ -109,8 +109,6 @@ class Helper_Test(unittest.TestCase):
       helper.ValidateEndTimeIsAfterStartTime("2020-10-01 00:00:00", "2020-10-02 00:00")
     except ValueError as ex:
       self.assertEqual(str(ex), "EndTime has incorrect datetime format.  It should be YYYY-MM-DD HH:MM:SS.")
-
-
 
 
 if __name__ == '__main__':

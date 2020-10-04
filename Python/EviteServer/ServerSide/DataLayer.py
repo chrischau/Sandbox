@@ -20,6 +20,11 @@ class DataLayer:
     #print("Database created and Successfully Connected to SQLite") #TODO logging
 
 
+  def __del__ (self):
+    self.cursor.close()
+    self.sqliteConnection.close()
+
+
   def FindAllEvents(self):
     self.cursor.execute(self.sql.SelectAllEventsSQL)
     results = self.__AggregateData(self.cursor.description, self.cursor.fetchall())
@@ -306,3 +311,4 @@ class DataLayer:
     except Exception as ex:
       self.sqliteConnection.rollback()
       raise ValueError("An error has occurred on the database interaction.  Changes have been rolled back.  \nError Message:" + str(ex))
+
