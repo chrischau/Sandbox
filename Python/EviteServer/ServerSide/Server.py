@@ -11,13 +11,13 @@ endTimeKeyWord, eventIdKeyWord, locationKeyWord, eventNameKeyWord, startTimeKeyW
 emailKeyWord,attendeeIdKeyWord = "AttendeeEmail","AttendeeId"
 
 
-@app.route('/', methods=['GET'])
+@app.route('/api/v1/', methods=['GET'])
 def HomePageInstruction():
   apiDoc = APIDocumentation()
   return apiDoc.APIDocumentation
 
 
-@app.route('/events', methods=['GET'])
+@app.route('/api/v1/events', methods=['GET'])
 def FindEvents():
   try:
     dataLayer = DataLayer()
@@ -38,7 +38,7 @@ def FindEvents():
     return str(ex), 404
 
 
-@app.route('/events', methods=['POST'])
+@app.route('/api/v1/events', methods=['POST'])
 def CreateEvent():
   try:
     if eventNameKeyWord not in request.args:
@@ -64,7 +64,7 @@ def CreateEvent():
     return str(ex), 404
 
 
-@app.route('/events', methods=['PUT'])
+@app.route('/api/v1/events', methods=['PUT'])
 def UpdateEvent():
   try:
     if eventIdKeyWord not in request.args:
@@ -90,7 +90,7 @@ def UpdateEvent():
     return str(ex), 404
 
 
-@app.route('/events', methods=['DELETE'])
+@app.route('/api/v1/events', methods=['DELETE'])
 def DeleteEvent():
   try:
     if eventIdKeyWord not in request.args:
@@ -107,7 +107,7 @@ def DeleteEvent():
     return str(ex), 404
 
 
-@app.route('/attendees', methods=['GET'])
+@app.route('/api/v1/attendees', methods=['GET'])
 def FindAttendees():
   try:
     dataLayer = DataLayer()
@@ -124,7 +124,7 @@ def FindAttendees():
     return str(ex), 404
 
 
-@app.route('/attendees', methods=['POST'])
+@app.route('/api/v1/attendees', methods=['POST'])
 def CreateAttendee():
   try:
     if emailKeyWord not in request.args:
@@ -141,7 +141,7 @@ def CreateAttendee():
     return str(ex), 404
 
 
-@app.route('/attendees', methods=['DELETE'])
+@app.route('/api/v1/attendees', methods=['DELETE'])
 def DeleteAttendee():
   try:
     if emailKeyWord not in request.args:
@@ -158,7 +158,7 @@ def DeleteAttendee():
     return str(ex), 404
 
 
-@app.route('/attendees', methods=['PUT'])
+@app.route('/api/v1/attendees', methods=['PUT'])
 def UpdateAttendee():
   try:
     if attendeeIdKeyWord not in request.args:
@@ -178,7 +178,7 @@ def UpdateAttendee():
     return str(ex), 404
 
 
-@app.route('/invites', methods=['GET'])
+@app.route('/api/v1/invites', methods=['GET'])
 def FindConfirmedInvitations():
   try:
     dataLayer = DataLayer()
@@ -203,7 +203,7 @@ def FindConfirmedInvitations():
     return str(ex), 404
 
 
-@app.route('/invites', methods=['PUT'])
+@app.route('/api/v1/invites', methods=['PUT'])
 def UpdateInvitationAttendance():
   try:
     if eventNameKeyWord not in request.args:
@@ -226,7 +226,7 @@ def UpdateInvitationAttendance():
     return str(ex), 404
 
 
-@app.route('/invites', methods=['DELETE'])
+@app.route('/api/v1/invites', methods=['DELETE'])
 def RemoveInvitationAttendance():
   try:
     if eventNameKeyWord not in request.args:
