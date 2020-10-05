@@ -1,4 +1,6 @@
 EviteServer API Documentation
+Endpoint Base: http://127.0.0.1:5002/api/v1/
+
 
 Operation: GET /events
 Parameters: EventId as an integer, optional

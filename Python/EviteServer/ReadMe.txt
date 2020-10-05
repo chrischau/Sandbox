@@ -21,11 +21,12 @@ Description
   - remove attendee to an event      : DELETE /invites
 
   For additional information about each operation, please start the API server and find more information at this link.
-  http://127.0.0.1:5002/
+  http://127.0.0.1:5002/api/v1/
 
   
 Pre-requisite
   - python 3
+  - Flask
   - SQLite database
   - Microsoft Windows (optional)
   - SMTP server
@@ -46,6 +47,6 @@ Deployment
   5. Kick off the "StartServer.bat".  Your EventServer API server is ready to use.
      If you are not using Windows, you will need to kick off the Server.py file in your environment.
 
-  6. The base web address is http://127.0.0.1:5002/
+  6. The base web address is http://127.0.0.1:5002/api/v1/
 
-  7. For more information, please consult the APIDocumentation.txt or API documentation page at http://127.0.0.1:5002/
+  7. For more information, please consult the APIDocumentation.txt or API documentation page at http://127.0.0.1:5002/api/v1/
