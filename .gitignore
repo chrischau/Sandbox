@@ -1,2 +1,6 @@
 Python/DonutFactory3000/ServerSide/server_trace.log
-Python/EviteServer/__pycache__/DataLayer.cpython-38.pyc
+Python/EviteServer/ServerSide/__pycache__/
+Python/EviteServer/ServerSide/__pycache__/*.pyc
+.vscode/
+Python/EviteServer/.vscode/**
+
