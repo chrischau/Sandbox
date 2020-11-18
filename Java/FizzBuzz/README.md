@@ -1,12 +1,12 @@
-Author: Chris Chau  
-Date: Nov 18, 2020  
-Version: 1  
+**Author:** Chris Chau  
+**Date:** Nov 18, 2020  
+**Version:** 1  
 
 Ensure the following libraries are in place and working
   - Java 8+
   - Junit 4.10+
-
-To Run Test Cases:
+  
+**To Run Test Cases:**
 1. Open a command prompt
 
 2. Compile the class with the below command with respect to their working folders
@@ -17,8 +17,8 @@ To Run Test Cases:
 
 4. The result should be displayed on the command prompt.
 
-
-To Run FizzBuzz Program:
+  
+**To Run FizzBuzz Program:**
 1. Open a command prompt
 
 2. Run the following commands
