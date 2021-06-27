@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- <script src="jquery-3.5.1.min.js"></script> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+
+    $(document).ready(function () {
+      $("button").click(function () {
+        $(".test").hide();
+      });
+
+      $("button").dbllick(function () {
+        $(".test").show();
+      });
+
+      $("#h2").mouseenter(function () {
+        alert("You entered h2!");
+      });
+
+      $("#p1").mouseenter(function () {
+        alert("You entered p1!");
+      });
+
+    });
+
+  </script>
+</head>
+
+<body>
+
+  <h2 id="h2" class="test">This is a heading</h2>
+
+  <p class="test">This is a paragraph.</p>
+  <p>This is another paragraph.</p>
+
+  <p id="p1">Enter this paragraph.</p>
+
+  <button>Click me</button>
+
+</body>
+
+</html>
