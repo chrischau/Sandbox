@@ -2,27 +2,49 @@
 <html>
 
 <head>
+  <meta charset="utf-8">
   <!-- <script src="jquery-3.5.1.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
+    function GetAPIData() {
+      var divShowData = $('#divShowData');
+      var apiAddress = "http://localhost/NWMCustomAPI-Publish/api/v1/margincalls/";
+      var marginCallId = 629315;
 
-    $(document).ready(function () {
-      $("button").click(function () {
-        $(".test").hide();
+      console.log("Calling AJAX to GET API");
+
+      divShowData.text("");
+
+      // $.ajax({
+      //   dataType: 'json',
+      //   type: 'GET',
+      //   url: apiAddress + marginCallId,
+      //   //data: {marginCallId}, 
+      //   success: (result) => {
+      //     $.each(result, (fieldName, fieldValue) => {
+      //       divShowData.append(fieldName + " - " + fieldValue + "<br>");
+      //     });
+      //     console.log(result)
+      //   },
+      //   error: () => {
+      //     alert("json not found");
+      //   }
+      // });
+
+      $.getJSON(apiAddress + marginCallId, (result) => {
+        $.each(result, (fieldName, fieldValue) => {
+          divShowData.append(fieldName + " - " + fieldValue + "<br>");
+        });
+
+        console.log(result);
       });
 
-      $("button").dbllick(function () {
-        $(".test").show();
-      });
+      console.log("Finished AJAX to GET API");
+    }
 
-      $("#h2").mouseenter(function () {
-        alert("You entered h2!");
-      });
-
-      $("#p1").mouseenter(function () {
-        alert("You entered p1!");
-      });
-
+    $(document).ready(() => {
+      //$('#buttonGetData').click(() => { GetAPIData() });
+      GetAPIData();
     });
 
   </script>
@@ -30,14 +52,9 @@
 
 <body>
 
-  <h2 id="h2" class="test">This is a heading</h2>
+  <!-- <button id="buttonGetData">Find Margin Call</button> -->
 
-  <p class="test">This is a paragraph.</p>
-  <p>This is another paragraph.</p>
-
-  <p id="p1">Enter this paragraph.</p>
-
-  <button>Click me</button>
+  <div id="divShowData">Show Data Here</div>
 
 </body>
 
